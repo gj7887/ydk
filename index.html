@@ -27,17 +27,14 @@
             </div>
 
             <div class="card-body">
-                <div class="col left">
-                    <div class="album-card">
-                        <img id="albumCover" src="https://placehold.co/260x260?text=封面" alt="封面">
-                        <div class="meta">
-                            <div id="songTitle">未选择歌曲</div>
-                            <div id="songArtist">未知艺术家</div>
+                <div class="col center">
+                    <div class="now-playing-banner">
+                        <div class="now-playing-label">当前播放</div>
+                        <div class="now-playing-meta">
+                            <div id="songTitle" class="now-playing-title">未选择歌曲</div>
+                            <div id="songArtist" class="now-playing-artist">未知艺术家</div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col center">
                     <div class="results-header">
                         <div class="select-all-container">
                             <input type="checkbox" id="selectAllCheckbox">
@@ -53,6 +50,7 @@
                 </div>
 
                 <div class="col right">
+
                     <div class="lyrics-box">
                         <div class="lyrics-header">歌词</div>
                         <div id="lyricsContainer" class="lyrics-scroll">

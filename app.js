@@ -18,8 +18,9 @@ class MusicPlayerApp {
         };
         this.lastDominantColor = null;
         this.theme = this.loadTheme();
-        this.currentSource = 'netease'; // 当前数据源（默认网易云）
+        this.currentSource = 'kuwo'; // 当前数据源（默认酷我）
         this.currentPage = 1; // 当前页码
+
         this.totalPages = 1; // 总页数
         this.searchKeyword = ''; // 搜索关键词
         this.searchType = 'song'; // 搜索类型（歌曲/专辑）
@@ -70,11 +71,9 @@ class MusicPlayerApp {
         } catch (error) {
             console.warn('无法读取主题设置:', error);
         }
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return 'dark';
-        }
-        return 'light';
+        return 'dark';
     }
+
 
     saveTheme(theme) {
         try {
@@ -361,8 +360,8 @@ class MusicPlayerApp {
                         <div class="artist">${song.artist}</div>
                         <div class="actions">
                             <button class="play-btn" onclick="app.handleResultPlay(${index})">▶ 播放</button>
-                            <button class="download-btn" onclick="app.handleResultDownload(${index})">⬇ 下载</button>
                         </div>
+
                     </div>
                 `).join('')}
             </div>
@@ -505,10 +504,10 @@ class MusicPlayerApp {
                     <div class="playlist-item-title">${song.name}</div>
                     <div class="playlist-item-artist">${song.artist}</div>
                 </div>
-                <button class="download-btn-small" onclick="event.stopPropagation(); app.downloadSong(${index})">⬇</button>
             </div>
         `).join('');
     }
+
 
     ensureSongInPlaylist(song) {
         if (!song) return -1;
@@ -531,13 +530,7 @@ class MusicPlayerApp {
         }
     }
 
-    handleResultDownload(resultIndex) {
-        if (resultIndex < 0 || resultIndex >= this.searchResults.length) return;
-        const playlistIndex = this.ensureSongInPlaylist(this.searchResults[resultIndex]);
-        if (playlistIndex !== -1) {
-            this.downloadSong(playlistIndex);
-        }
-    }
+
 
     async playSong(index) {
         if (index < 0 || index >= this.playlist.length) return;
@@ -597,31 +590,33 @@ class MusicPlayerApp {
     updatePlayerInfo() {
         if (!this.currentSong) return;
         
-        document.getElementById('songTitle').textContent = this.currentSong.name;
-        document.getElementById('songArtist').textContent = this.currentSong.artist;
-        
-        // 更新专辑封面
-        const albumCover = document.getElementById('albumCover');
-        if (this.currentSong.pic) {
-            albumCover.src = this.currentSong.pic;
-            // 根据专辑封面颜色更新背景
-            this.updateBackgroundFromImage(this.currentSong.pic);
-        } else {
-            // 尝试获取高清专辑图（500px大图）
-            musicAPI.getPic(this.currentSong.id, this.currentSong.source, '500')
-                .then(picData => {
-                    if (picData.url) {
-                        albumCover.src = picData.url;
-                        this.updateBackgroundFromImage(picData.url);
-                    }
-                })
-                .catch(() => {
-                    albumCover.src = 'https://placehold.co/300x300?text=专辑封面';
-                    // 重置为默认背景
-                    this.resetBackground();
-                });
+        const titleEl = document.getElementById('songTitle');
+        if (titleEl) {
+            titleEl.textContent = this.currentSong.name;
         }
+        const artistEl = document.getElementById('songArtist');
+        if (artistEl) {
+            artistEl.textContent = this.currentSong.artist;
+        }
+        
+        if (this.currentSong.pic) {
+            this.updateBackgroundFromImage(this.currentSong.pic);
+            return;
+        }
+        
+        musicAPI.getPic(this.currentSong.id, this.currentSong.source, '500')
+            .then(picData => {
+                if (picData.url) {
+                    this.updateBackgroundFromImage(picData.url);
+                } else {
+                    this.resetBackground();
+                }
+            })
+            .catch(() => {
+                this.resetBackground();
+            });
     }
+
 
     // 根据专辑封面自动取色并更新背景
     updateBackgroundFromImage(imageSrc) {
@@ -1014,36 +1009,7 @@ class MusicPlayerApp {
         return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
     }
 
-    async downloadSong(index) {
-        if (index < 0 || index >= this.playlist.length) return;
-        
-        const song = this.playlist[index];
-        
-        try {
-            // 获取选中的音质
-            const quality = document.getElementById('qualitySelect').value || '999';
-            
-            const urlData = await musicAPI.getMusicUrl(song.id, song.source, quality);
-            
-            if (!urlData.url) {
-                alert('无法获取下载链接');
-                return;
-            }
-            
-            // 创建下载链接
-            const link = document.createElement('a');
-            link.href = urlData.url;
-            link.download = `${song.name} - ${song.artist}.mp3`;
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-        } catch (error) {
-            console.error('下载音乐失败:', error);
-            alert('下载音乐失败，请稍后重试');
-        }
-    }
+
 
     // 新增：加载收藏列表
     loadFavorites() {
@@ -1175,9 +1141,15 @@ const app = new MusicPlayerApp();
 // 页面加载完成后初始化数据源选择器
 document.addEventListener('DOMContentLoaded', function() {
     const sourceSelect = document.getElementById('sourceSelect');
+    if (!sourceSelect) return;
     const sources = musicAPI.getSources();
     
     sourceSelect.innerHTML = sources.map(source => 
         `<option value="${source.id}">${source.name}</option>`
     ).join('');
+
+    const hasDefaultSource = sources.some(source => source.id === app.currentSource);
+    if (hasDefaultSource) {
+        sourceSelect.value = app.currentSource;
+    }
 });
