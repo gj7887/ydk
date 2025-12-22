@@ -365,11 +365,22 @@ body.light-theme #searchInput::placeholder {
     box-shadow: 0 22px 55px rgba(2, 6, 23, 0.5);
 }
 
+#sourceSelect option {
+    background: rgba(9, 14, 35, 0.98);
+    color: #e6eef8;
+    padding: 10px;
+}
+
 body.light-theme #sourceSelect {
     background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(243,244,255,0.9));
     color: #0f172a;
     border: 1px solid rgba(15,23,42,0.1);
     box-shadow: 0 15px 35px rgba(15, 23, 42, 0.12);
+}
+
+body.light-theme #sourceSelect option {
+    background: rgba(255, 255, 255, 0.98);
+    color: #0f172a;
 }
 
 
@@ -391,11 +402,17 @@ body.light-theme #sourceSelect {
     transform: translateY(-2px);
 }
 
+/* 顶部栏容器 - 新增独立行 */
+.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 10;
+}
+
 /* 主题切换按钮 */
 .theme-toggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
     background: rgba(255, 255, 255, 0.2);
     border: none;
     width: 50px;
