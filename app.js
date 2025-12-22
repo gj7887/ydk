@@ -535,11 +535,58 @@ class MusicPlayerApp {
         }
     }
 
-    handleResultDownload(resultIndex) {
+    async handleResultDownload(resultIndex) {
         if (resultIndex < 0 || resultIndex >= this.searchResults.length) return;
-        const playlistIndex = this.ensureSongInPlaylist(this.searchResults[resultIndex]);
-        if (playlistIndex !== -1) {
-            this.downloadSong(playlistIndex);
+        const song = this.searchResults[resultIndex];
+        
+        try {
+            const quality = document.getElementById('qualitySelect').value || '999';
+            const urlData = await musicAPI.getMusicUrl(song.id, song.source, quality);
+            if (!urlData.url) {
+                alert('无法获取下载链接');
+                return;
+            }
+            
+            console.log('开始下载:', song.name);
+            
+            // 尝试通过 fetch 下载并创建 blob URL
+            try {
+                const response = await fetch(urlData.url);
+                if (!response.ok) throw new Error('下载失败');
+                
+                const blob = await response.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = `${song.name} - ${song.artist}.mp3`;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // 延迟释放 blob URL
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+                
+                alert(`正在下载: ${song.name}`);
+            } catch (fetchError) {
+                console.warn('通过 fetch 下载失败，尝试直接下载:', fetchError);
+                
+                // 回退到直接下载链接
+                const link = document.createElement('a');
+                link.href = urlData.url;
+                link.download = `${song.name} - ${song.artist}.mp3`;
+                link.target = '_blank';
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                alert(`下载链接已打开，请在新窗口中保存文件`);
+            }
+        } catch (error) {
+            console.error('下载音乐失败:', error);
+            alert('下载音乐失败，请稍后重试');
         }
     }
 
@@ -611,13 +658,45 @@ class MusicPlayerApp {
                 alert('无法获取下载链接');
                 return;
             }
-            const link = document.createElement('a');
-            link.href = urlData.url;
-            link.download = `${song.name} - ${song.artist}.mp3`;
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            
+            // 显示下载提示
+            console.log('开始下载:', song.name);
+            
+            // 尝试通过 fetch 下载并创建 blob URL
+            try {
+                const response = await fetch(urlData.url);
+                if (!response.ok) throw new Error('下载失败');
+                
+                const blob = await response.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = `${song.name} - ${song.artist}.mp3`;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // 延迟释放 blob URL
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+                
+                alert(`正在下载: ${song.name}`);
+            } catch (fetchError) {
+                console.warn('通过 fetch 下载失败，尝试直接下载:', fetchError);
+                
+                // 回退到直接下载链接
+                const link = document.createElement('a');
+                link.href = urlData.url;
+                link.download = `${song.name} - ${song.artist}.mp3`;
+                link.target = '_blank';
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                alert(`下载链接已打开，请在新窗口中保存文件`);
+            }
         } catch (error) {
             console.error('下载音乐失败:', error);
             alert('下载音乐失败，请稍后重试');
