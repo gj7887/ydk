@@ -351,20 +351,12 @@ class MusicPlayerApp {
                 ${this.searchResults.map((song, index) => `
                     <div class="music-card" data-index="${index}">
                         <input type="checkbox" class="song-checkbox" data-id="${song.id}">
-                        <img src="${song.pic || 'https://placehold.co/300x300?text=无封面'}" 
-                             alt="${song.name}" 
-                             data-pic-id="${song.pic_id || song.id}"
-                             data-source="${song.source || this.currentSource}"
-                             onerror="this.src='https://placehold.co/300x300?text=无封面'">
                         <div class="title">${song.name}</div>
                         <div class="artist">${song.artist}</div>
                         <div class="actions">
                             <button class="play-btn" onclick="app.handleResultPlay(${index})">▶ 播放</button>
                             <button class="download-btn" onclick="app.handleResultDownload(${index})">⬇ 下载</button>
                         </div>
-
-
-
                     </div>
                 `).join('')}
             </div>
