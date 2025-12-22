@@ -1,0 +1,19 @@
+name = "ydk"
+compatibility_date = "2025-12-16"
+main = "functions/index.js"
+
+[build]
+command = ""
+
+[vars]
+MUSIC_API_URL = "/api/music-proxy"
+
+[assets]
+directory = "./"
+include = ["*.html", "*.css", "app.js", "music-client.js"]
+exclude = ["functions/", "src/", "node_modules/", "*.md", "wrangler.toml", "package.json"]
+
+[[ d1_databases ]]
+binding = "DB" # available in your Worker on env.DB
+database_name = "music_player_db"
+database_id = ""

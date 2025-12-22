@@ -1,0 +1,13 @@
+{
+  "name": "modern-music-player",
+  "version": "1.0.0",
+  "description": "A modern music player with Cloudflare Pages deployment support",
+  "main": "index.js",
+  "scripts": {
+    "dev": "wrangler pages dev --proxy 3000 http://localhost:8788",
+    "deploy": "wrangler pages deploy"
+  },
+  "keywords": ["music", "player", "cloudflare"],
+  "author": "Developer",
+  "license": "MIT"
+}

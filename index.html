@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 现代音乐播放器</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-wrap">
+        <div class="player-card">
+            <div class="card-header">
+                <div class="brand">Modern Music Player</div>
+                <div class="header-controls">
+                    <select id="sourceSelect" aria-label="数据源"></select>
+                    <button id="themeToggle" class="theme-toggle" aria-label="切换主题"><span id="themeIcon">🌙</span></button>
+                </div>
+            </div>
+
+            <div class="card-search">
+                <input id="searchInput" placeholder="搜索歌曲、歌手或专辑" />
+                <select id="searchTypeSelect">
+                    <option value="song">歌曲</option>
+                    <option value="album">专辑</option>
+                </select>
+                <button id="searchBtn" class="btn-ghost">搜索</button>
+            </div>
+
+            <div class="card-body">
+                <div class="col left">
+                    <div class="album-card">
+                        <img id="albumCover" src="https://placehold.co/260x260?text=封面" alt="封面">
+                        <div class="meta">
+                            <div id="songTitle">未选择歌曲</div>
+                            <div id="songArtist">未知艺术家</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col center">
+                    <div class="results-header">
+                        <div class="select-all-container">
+                            <input type="checkbox" id="selectAllCheckbox">
+                            <label for="selectAllCheckbox">全选当前页</label>
+                        </div>
+                        <button id="batchImportBtn" class="batch-import-btn">批量添加至播放列表</button>
+                    </div>
+                    <div id="resultsContainer">
+                        <div class="results-grid">
+                            <p class="placeholder">请输入关键词搜索音乐</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col right">
+                    <div class="lyrics-box">
+                        <div class="lyrics-header">歌词</div>
+                        <div id="lyricsContainer" class="lyrics-scroll">
+                            <p class="no-lyrics">暂无歌词</p>
+                        </div>
+                    </div>
+                    <div class="visualizer-container">
+                        <h3>音频可视化</h3>
+                        <canvas id="visualizer" width="240" height="120"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="controls-left">
+                    <button id="prevBtn" class="control">⏮</button>
+                    <button id="playBtn" class="control play">▶</button>
+                    <button id="nextBtn" class="control">⏭</button>
+                </div>
+                <div class="progress-wrap">
+                    <span id="currentTime">00:00</span>
+                    <input id="progressBar" type="range" min="0" max="100" value="0">
+                    <span id="duration">00:00</span>
+                </div>
+                <div class="controls-right">
+                    <div class="quality-selector">
+                        <select id="qualitySelect" aria-label="音质">
+                            <option value="999">无损</option>
+                            <option value="320">320</option>
+                            <option value="128">128</option>
+                        </select>
+                    </div>
+                    <div class="volume-container">
+                        <span aria-hidden="true">🔊</span>
+                        <input id="volumeControl" class="volume-slider" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="音量">
+                    </div>
+                </div>
+            </div>
+            <audio id="audioPlayer"></audio>
+        </div>
+
+        <button id="playlistToggle" class="playlist-toggle" aria-label="打开播放列表">≡</button>
+
+        <div id="playlistPanel" class="playlist-panel" aria-hidden="true">
+            <div class="playlist-header">
+                <h2>播放列表</h2>
+                <button id="closePlaylist" class="close-playlist" aria-label="关闭播放列表">×</button>
+            </div>
+            <div class="playlist-actions">
+                <button id="playModeBtn" class="action-btn mode-btn" title="列表循环">🔁</button>
+                <button id="exportPlaylistBtn" class="action-btn">导出</button>
+                <button id="importPlaylistBtn" class="action-btn">导入</button>
+            </div>
+            <div id="playlistContainer" class="playlist-items">
+                <p class="placeholder">播放列表为空</p>
+            </div>
+        </div>
+
+        <input type="file" id="importFileInput" accept=".json" style="display:none">
+    </div>
+
+    <script src="music-client.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
